@@ -7,6 +7,7 @@ import {
 import { PrismaClient } from '@prisma/client';
 import { PrinterService } from '../printer';
 import {
+  getCountriesReport,
   getEmploymentLetterByIdReport,
   getEmploymentLetterReport,
   getHelloWorldReport,
@@ -60,6 +61,48 @@ export class BasicReportsService extends PrismaClient implements OnModuleInit {
       employeeWorkSchedule: employee.work_schedule,
     });
 
+    const doc = this.printerService.createPDF(docDefinition);
+    return doc;
+  }
+
+  public async getCountries() {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    const countries = await this.countries.findMany({
+      where: {
+        local_name: {
+          not: null,
+        },
+      },
+    });
+
+    const docDefinition = getCountriesReport({
+      countries,
+      title: 'Countries Report',
+      subTitle: 'List of countries',
+    });
+    const doc = this.printerService.createPDF(docDefinition);
+    return doc;
+  }
+
+  public async getCountriesByName(name: string) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    const countries = await this.countries.findMany({
+      where: {
+        name: {
+          startsWith: name,
+          mode: 'insensitive',
+        },
+        local_name: {
+          not: null,
+        },
+      },
+    });
+
+    const docDefinition = getCountriesReport({
+      countries,
+      title: 'Countries Report',
+      subTitle: 'List of countries',
+    });
     const doc = this.printerService.createPDF(docDefinition);
     return doc;
   }
