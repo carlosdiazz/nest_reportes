@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
-import { BasicReportsModule } from 'src/components';
+import { BasicReportsModule, PrinterModule } from 'src/components';
 
 @Module({
-  imports: [BasicReportsModule],
+  imports: [BasicReportsModule, PrinterModule],
   controllers: [AppController],
 })
 export class AppModule {}
