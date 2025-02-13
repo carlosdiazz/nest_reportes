@@ -4,7 +4,7 @@ import {
   NotFoundException,
   OnModuleInit,
 } from '@nestjs/common';
-import { getOrderByIdReport } from '../reports';
+import { getBasicChartSvggReport, getOrderByIdReport } from '../reports';
 import { PrinterService } from '../printer';
 import { PrismaClient } from '@prisma/client';
 
@@ -40,6 +40,13 @@ export class StoreReportsService extends PrismaClient implements OnModuleInit {
       throw new NotFoundException(`Order with id ${orderID} not found`);
     }
     const docDefinition = getOrderByIdReport({ order: order as any });
+
+    const doc = this.printerService.createPDF(docDefinition);
+    return doc;
+  }
+
+  public async getSvgsChart() {
+    const docDefinition = await getBasicChartSvggReport();
 
     const doc = this.printerService.createPDF(docDefinition);
     return doc;
